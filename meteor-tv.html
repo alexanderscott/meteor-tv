@@ -1,0 +1,99 @@
+<head>
+  <title>meteorTV</title>
+</head>
+
+<body>
+    <div class="container-fluid">
+        <div class="row-fluid">
+            <div class="span3">
+                {{> sidenav}}
+            </div>
+            <div class="span9">
+                {{> screen}}
+            </div>
+        </div>
+    </div>
+</body>
+
+<template name="screen">
+    <div class="video-wrapper">
+        <!--<iframe id="player" class="youtube-player" type="text/html" width="600" height="400" src="http://www.youtube.com/embed/{{vidID}}?controls=0&showinfo=0&enablejsapi=1&origin={{origin}}" frameborder="0" allowfullscreen>-->
+        <iframe id="player" class="youtube-player" type="text/html" width="600" height="400" src="http://www.youtube.com/embed/{{vidID}}?controls=0&enablejsapi=1&origin={{origin}}" frameborder="0" allowfullscreen>
+        <!--<object width="640" height="360">-->
+          <!--<param name="movie" value="https://www.youtube.com/v/{{vidID}}?version=3&enablejsapi=1&playerapiid=ytPlayer"></param>-->
+          <!--<param name="allowFullScreen" value="true"></param>-->
+          <!--<param name="allowScriptAccess" value="always"></param>-->
+          <!--<embed src="https://www.youtube.com/v/{{vidID}}?version=3" type="application/x-shockwave-flash" allowfullscreen="true" allowScriptAccess="always" width="640" height="360"></embed>-->
+        <!--</object>-->
+    </div>
+</template>
+
+<template name="sidenav">
+    <div id="sidenav">
+        <div class="img-center-wrapper">
+            <h1 class="text-logo">meteorTV</h1>
+            <!--<img id="cloudjams-logo" src="/cloudjams-logo.png" alt="cloudjams"/>-->
+        </div>
+        <div class="centered-pills">
+            <ul class="nav nav-pills">
+                <li class="active"> <a href="#queue" data-toggle="tab">Up next</a> </li>
+                <li> <a href="#chat" data-toggle="tab">Chat it up</a> </li>
+            </ul>
+        </div>
+        <div class="tab-content">
+            <div class="tab-pane active" id="queue">{{> queue}}</div>
+            <div class="tab-pane" id="chat">{{> chat}}</div>
+        </div>
+
+        <button id="test-btn" class="btn" style="margin-top:50px;">TEST ME</button>
+
+    </div>
+</template>
+
+<template name="queue">
+        <!--<form class="form-search">-->
+        <div class="input-append control-group">
+            <input id="video-input" placeholder="Link to YouTube video" type="text" class="input-large">
+            <button id="video-submit" type="submit" class="btn">+</button>
+            <label id="video-input-label" class="control-label" for="video-input"></label>
+        </div>
+        <ul class="queue-list">
+            {{#each queue}}
+            <li class="queue-item queue-item-{{this.type}}">
+                <div class="media">
+                    <div class="media-object pull-left">
+                        <img class="video-thumbnail" src="http://img.youtube.com/vi/{{this.fid}}/0.jpg" alt="{{this.source}}"/>
+                    </div>
+                    <div class="media-body">
+                        <h4 class="media-heading">{{this.name}}</h4>
+                        {{this.duration}}
+                    </div>
+                </div>
+            </li>
+            {{/each}}
+        </ul>
+</template>
+
+<!--<template name="search">-->
+    <!--<form class="form-search">-->
+      <!--<input type="text" class="input-medium search-query span10">-->
+      <!--<button type="submit" class="btn">+</button>-->
+    <!--</form>-->
+<!--</template>-->
+
+<template name="chat">
+
+    <ul class="player-list">
+        {{#each player}}
+        <li class="player-list-item">
+            <div>{{this.name}}</div>
+        </li>
+        {{/each}}
+    </ul>
+        
+    
+    <ul class="chat-list">
+        <li class="chat-list-item"><li>
+    </ul>
+
+</template>
