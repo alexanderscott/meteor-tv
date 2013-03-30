@@ -1,59 +1,64 @@
+###
+# YOUTUBE PLAYER HELPER LIB 
+###
 
-# async script insertion
-tag = document.createElement('script')
-tag.src = "https://www.youtube.com/iframe_api"
-firstScriptTag = document.getElementsByTagName('script')[0]
-firstScriptTag.parentNode.insertBefore(tag, firstScriptTag)
 
-# This function creates an <iframe> (and YouTube player)
-#    after the API code downloads.
-onYouTubeIframeAPIReady = ->
-    console.log 'js on youtube iframe api ready'
+YouTubePlayer = null
+
+# Helper for player state status string
+playerState =
+    '-1': 'UNSTARTED',
+    '0' : 'ENDED',
+    '1' : 'PLAYING',
+    '2' : 'PAUSED'
+    '3' : 'BUFFERING',
+    '5' : 'CUED'
+    
+# Playback controls
+stopVideo = -> YouTubePlayer.stopVideo
+playVideo = (vid) -> YouTubePlayer.play vid
+pauseVideo = -> YouTubePlayer.pauseVideo
+
+# Get playback info
+getVideoDuration = -> YouTubePlayer.getDuration
+getVideoTimeElapsed = -> YouTubePlayer.getCurrentTime
+getPlayerState = -> YouTubePlayer.getPlayerState
+
+
+initYoutube = ->
+    params =
+        allowScriptAccess: 'always'
+    atts =
+        id: 'player',
+        wmode: 'transparent'
+
+    swfobject.embedSWF(
+        'http://www.youtube.com/apiplayer?enablejsapi=1&playerapiid=player&version=3',
+        'ytapiplayer', '640', '390', '8', null, null, params, atts
+    )
+
+
+
+onYouTubePlayerReady = (playerId) ->
+    console.log 'youtube player ready!'
     $('.video-wrapper').fitVids()
-    player = new YT.Player('player', {
-        playerVars: {
-            'autoplay': 1,
-            'controls': 0,
-            'showinfo': 1
-        },
-        #ytPlayer = new YT.Player('video-wrapper', {
-        #height: '390',
-        #width: '640',
-        #videoId: 's6WGNd8QR-U',
-        events: {
-            'onReady': onPlayerReady,
-            'onStateChange': onPlayerStateChange
-        }
-    })
+    YouTubePlayer = document.getElementById(playerId)
+    YouTubePlayer.addEventListener('onStateChange', onPlayerStateChange)
 
-# The API will call this function when the video player is ready.
-onPlayerReady = (event) ->
-    #$('.video-wrapper').fitVids()
-    console.log 'js on player ready'
-    event.target.playVideo()
 
-#    The API calls this function when the player's state changes.
-#    The function indicates that when playing a video (state=1),
-#    the player should play for six seconds and then stop.
-done = false
 onPlayerStateChange = (event) ->
-    if event.data is YT.PlayerState.PLAYING and !done
-        setTimeout(stopVideo, 6000)
-        done = true
+    console.log 'YT.PlayerState changed to ', playerState[event.data]
 
-stopVideo = ->
-    player.stopVideo()
+onPlayerError = (event) ->
+    console.log 'YT.Player Error: ', event.data
+
 
 
 # Return youtube id from a URL
 getVideoIDFromURL = (ytUrl) ->
-
     ytUrl = ytUrl || ""      #make sure it's a string; sometimes the YT player API returns undefined, and then indexOf() below will fail
-    
     qryParamsStart = ytUrl.indexOf "?"
-    
     qryParams = ytUrl.substring(qryParamsStart, ytUrl.length)
-    
     videoStart = qryParams.indexOf "v="
 
     if videoStart > -1
@@ -63,6 +68,8 @@ getVideoIDFromURL = (ytUrl) ->
         return qryParams.substring(videoStart+"v=".length, videoEnd)
     
     return ""
+
+
 
 checkYouTubeUrl = (ytUrl) ->
     parsedId = getVideoIDFromURL(ytUrl)
@@ -79,3 +86,12 @@ checkYouTubeUrl = (ytUrl) ->
         $('.control-group').addClass 'error'
 
 
+
+getYouTubeSearch = (query, callback) ->
+    $.getJSON('https://gdata.youtube.com/feeds/api/videos?callback=?',
+            q: query,
+            alt: 'jsonc',
+            v: '2',
+            format: '5'
+        callback
+    )

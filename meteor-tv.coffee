@@ -14,7 +14,14 @@ sampleVideos = [
         "source"    : "youtube",
         "name"      : "vid2",
         "duration"  : "100"
+    },
+    {
+        "fid"       : "Fss3Xn5dZzU",
+        "source"    : "youtube",
+        "name"      : "vid3",
+        "duration"  : "100"
     }
+
 ]
 
 samplePlayers = [
