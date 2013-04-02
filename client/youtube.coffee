@@ -3,7 +3,7 @@
 ###
 
 
-YouTubePlayer = null
+YouTubePlayer = YouTubePlayer or null
 
 # Helper for player state status string
 playerState =
@@ -16,7 +16,7 @@ playerState =
     
 # Playback controls
 stopVideo = -> YouTubePlayer.stopVideo
-playVideo = (vid) -> YouTubePlayer.play vid
+playVideo = -> YouTubePlayer.playVideo
 pauseVideo = -> YouTubePlayer.pauseVideo
 
 # Get playback info
@@ -25,7 +25,7 @@ getVideoTimeElapsed = -> YouTubePlayer.getCurrentTime
 getPlayerState = -> YouTubePlayer.getPlayerState
 
 
-initYoutube = ->
+initYouTube = ->
     params =
         allowScriptAccess: 'always'
     atts =
@@ -40,7 +40,7 @@ initYoutube = ->
 
 
 onYouTubePlayerReady = (playerId) ->
-    console.log 'youtube player ready!'
+    console.log 'YOUTUBE: player ready'
     $('.video-wrapper').fitVids()
     YouTubePlayer = document.getElementById(playerId)
     YouTubePlayer.addEventListener('onStateChange', onPlayerStateChange)
@@ -73,7 +73,7 @@ getVideoIDFromURL = (ytUrl) ->
 
 checkYouTubeUrl = (ytUrl) ->
     parsedId = getVideoIDFromURL(ytUrl)
-    console.log 'inserting video: ', parsedId
+    console.log 'YOUTUBE: Inserting video: ', parsedId
 
     if parsedId isnt ''
         Videos.insert
@@ -87,7 +87,7 @@ checkYouTubeUrl = (ytUrl) ->
 
 
 
-getYouTubeSearch = (query, callback) ->
+searchYouTube = (query, callback) ->
     $.getJSON('https://gdata.youtube.com/feeds/api/videos?callback=?',
             q: query,
             alt: 'jsonc',
